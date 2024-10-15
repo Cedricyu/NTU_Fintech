@@ -1,45 +1,21 @@
-def myStrategy(pastPriceVec, currentPrice):
-    import numpy as np
+import numpy as np
+from sklearn.linear_model import LogisticRegression
 
-    # Define parameters for the moving averages and thresholds
-    shortWindow = 10   # Short-term MA window size
-    longWindow = 30    # Long-term MA window size
-    volatilityWindow = 20 # Window size for volatility calculation
-    alpha = 1.5        # Dynamic threshold multiplier
-    beta = 1.5         # Dynamic threshold multiplier
+import joblib
+model = joblib.load("my_trained_model.pkl")
 
-    action = 0         # Default action is to hold
-
-    # Check that we have enough data to proceed with calculations
-    dataLen = len(pastPriceVec)
-    if dataLen == 0:
-        return action
+def generate_features(priceVec):
+    window_size = 5
+    if len(priceVec) < window_size:
+        return np.zeros((1, 2)) 
     
-    # Calculate short-term and long-term moving averages
-    if dataLen < shortWindow:
-        shortMA = np.mean(pastPriceVec)   # Average of entire vector if too short
-    else:
-        shortMA = np.mean(pastPriceVec[-shortWindow:])
-        
-    if dataLen < longWindow:
-        longMA = np.mean(pastPriceVec)    # Average of entire vector if too short
-    else:
-        longMA = np.mean(pastPriceVec[-longWindow:])
+    moving_avg = np.mean(priceVec[-window_size:])
+    price_change = priceVec[-1] - priceVec[-window_size]
     
-    # Calculate volatility over the past prices
-    if dataLen < volatilityWindow:
-        volatility = np.std(pastPriceVec)
-    else:
-        volatility = np.std(pastPriceVec[-volatilityWindow:])
+    return np.array([moving_avg, price_change]).reshape(1, -1)
 
-    # Adjust thresholds dynamically based on volatility
-    buyThreshold = alpha * volatility
-    sellThreshold = beta * volatility
-    
-    # Determine action based on short/long MA crossover and volatility-adjusted thresholds
-    if (shortMA - longMA) > buyThreshold:      # Short-term MA is significantly above long-term MA
-        action = 1
-    elif (shortMA - longMA) < -sellThreshold:  # Short-term MA is significantly below long-term MA
-        action = -1
 
-    return action
+def myStrategy(priceVec, currentPrice):
+    features = generate_features(priceVec)
+    action = model.predict(features)
+    return action[0]

@@ -24,5 +24,4 @@ def preprocess_text(text):
         stemmer.stem(word) for word in tokens 
         if word not in stop_words or not word.isascii()  # Keep non-ASCII words (like Chinese)
     ]
-    
-    return ' '.join(tokens)  # Return processed text
+    return ' '.join(tokens)

@@ -402,7 +402,7 @@
         },
         {
             "qid": 101,
-            "retrieve": 69
+            "retrieve": 558
         },
         {
             "qid": 102,
@@ -418,7 +418,7 @@
         },
         {
             "qid": 105,
-            "retrieve": 113
+            "retrieve": 294
         },
         {
             "qid": 106,
@@ -430,7 +430,7 @@
         },
         {
             "qid": 108,
-            "retrieve": 177
+            "retrieve": 105
         },
         {
             "qid": 109,
@@ -438,23 +438,23 @@
         },
         {
             "qid": 110,
-            "retrieve": 453
+            "retrieve": 611
         },
         {
             "qid": 111,
-            "retrieve": 199
+            "retrieve": 76
         },
         {
             "qid": 112,
-            "retrieve": 400
+            "retrieve": 403
         },
         {
             "qid": 113,
-            "retrieve": 130
+            "retrieve": 509
         },
         {
             "qid": 114,
-            "retrieve": 512
+            "retrieve": 279
         },
         {
             "qid": 115,
@@ -470,19 +470,19 @@
         },
         {
             "qid": 118,
-            "retrieve": 450
+            "retrieve": 554
         },
         {
             "qid": 119,
-            "retrieve": 506
+            "retrieve": 610
         },
         {
             "qid": 120,
-            "retrieve": 595
+            "retrieve": 20
         },
         {
             "qid": 121,
-            "retrieve": 51
+            "retrieve": 414
         },
         {
             "qid": 122,
@@ -490,7 +490,7 @@
         },
         {
             "qid": 123,
-            "retrieve": 578
+            "retrieve": 527
         },
         {
             "qid": 124,
@@ -498,15 +498,15 @@
         },
         {
             "qid": 125,
-            "retrieve": 530
+            "retrieve": 604
         },
         {
             "qid": 126,
-            "retrieve": 162
+            "retrieve": 1
         },
         {
             "qid": 127,
-            "retrieve": 274
+            "retrieve": 365
         },
         {
             "qid": 128,
@@ -514,19 +514,19 @@
         },
         {
             "qid": 129,
-            "retrieve": 210
+            "retrieve": 283
         },
         {
             "qid": 130,
-            "retrieve": 247
+            "retrieve": 5
         },
         {
             "qid": 131,
-            "retrieve": 591
+            "retrieve": 600
         },
         {
             "qid": 132,
-            "retrieve": 561
+            "retrieve": 334
         },
         {
             "qid": 133,
@@ -534,15 +534,15 @@
         },
         {
             "qid": 134,
-            "retrieve": 87
+            "retrieve": 328
         },
         {
             "qid": 135,
-            "retrieve": 271
+            "retrieve": 431
         },
         {
             "qid": 136,
-            "retrieve": 183
+            "retrieve": 504
         },
         {
             "qid": 137,
@@ -570,11 +570,11 @@
         },
         {
             "qid": 143,
-            "retrieve": 535
+            "retrieve": 144
         },
         {
             "qid": 144,
-            "retrieve": 542
+            "retrieve": 225
         },
         {
             "qid": 145,
@@ -586,7 +586,7 @@
         },
         {
             "qid": 147,
-            "retrieve": 250
+            "retrieve": 87
         },
         {
             "qid": 148,
@@ -594,11 +594,11 @@
         },
         {
             "qid": 149,
-            "retrieve": 142
+            "retrieve": 441
         },
         {
             "qid": 150,
-            "retrieve": 73
+            "retrieve": 221
         }
     ]
 }

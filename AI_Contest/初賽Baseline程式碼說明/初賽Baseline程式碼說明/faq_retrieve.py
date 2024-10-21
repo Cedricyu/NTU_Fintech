@@ -4,9 +4,12 @@ from transformers import AutoTokenizer, AutoModel
 import torch.nn.functional as F
 from torch import Tensor
 import os
+import torch
+from torch.cuda.amp import autocast
+from device import get_device
+
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 tokenizer_l = AutoTokenizer.from_pretrained('intfloat/multilingual-e5-large')
-model_l = AutoModel.from_pretrained('intfloat/multilingual-e5-large')
 def number_to_chinese(num):
     units = ["", "十", "百", "千", "萬", "億"]
     digits = "零一二三四五六七八九"
@@ -59,32 +62,42 @@ def average_pool(last_hidden_states: Tensor,
     last_hidden = last_hidden_states.masked_fill(~attention_mask[..., None].bool(), 0.0)
     return last_hidden.sum(dim=1) / attention_mask.sum(dim=1)[..., None]
 
+model_l = AutoModel.from_pretrained('intfloat/multilingual-e5-large').to(get_device())
+
 def embadding_e5_l(input_texts, relevant_doc_ids):
-    # 分詞
+    # Tokenize input texts
     batch_dict = tokenizer_l(input_texts, max_length=512, padding=True, truncation=True, return_tensors='pt')
-    # 獲取模型輸出
-    outputs = model_l(**batch_dict)
+    # Move tensors to the GPU
+    for key in batch_dict.keys():
+        batch_dict[key] = batch_dict[key].to(get_device())
+    # Use no_grad for inference
+    with torch.no_grad():
+        outputs = model_l(**batch_dict)
+
     embeddings = average_pool(outputs.last_hidden_state, batch_dict['attention_mask'])
-    # 正規化嵌入向量
+
+    # Normalize embeddings
     embeddings = F.normalize(embeddings, p=2, dim=1)
-    # 計算查詢與每個文檔的相似度分數
-    query_embedding = embeddings[0]  # 第一個是查詢的嵌入
-    doc_embeddings = embeddings[1:]  # 其餘的是相關文檔的嵌入
-    # 計算相似度分數
+
+    # Compute similarity scores
+    query_embedding = embeddings[0]  # First is the query embedding
+    doc_embeddings = embeddings[1:]  # Remaining are document embeddings
     scores = (query_embedding @ doc_embeddings.T) * 100
-    # 將 Tensor 轉換為 Python 列表
+
+    # Convert scores to a Python list
     scores = scores.tolist()
-    # 建立字典來儲存每個 doc_id 的最大分數
+
+    # Store max scores for each document ID
     doc_score_dict = {}
-     # 遍歷每個文檔的分數和對應的 doc_id
     for score, doc_id in zip(scores, relevant_doc_ids):
-        # 如果 doc_id 已存在於字典中，取較大分數
-        if doc_id in doc_score_dict:
-            doc_score_dict[doc_id] = max(doc_score_dict[doc_id], score)
-        else:
-            doc_score_dict[doc_id] = score
+        doc_score_dict[doc_id] = max(doc_score_dict.get(doc_id, float('-inf')), score)
+
+    # Cleanup
+    del outputs
+    torch.cuda.empty_cache()
 
     return doc_score_dict
+
 stopwords = {"的", "了", "之", "在", "和", "也", "有", "是","於","\n","：","。","，","「","」","【","】","、","；"}
 
 def FAQ_retrieve(query, relevant_doc_ids, relevant_docs):
@@ -94,4 +107,6 @@ def FAQ_retrieve(query, relevant_doc_ids, relevant_docs):
     # print("query: ",question_str)
     input_texts = [f"query: {question_str}"] + [f"passage: {doc}" for doc in relevant_docs]
     embadding_scores = embadding_e5_l(input_texts, relevant_doc_ids)
-    return embadding_scores
+    max_key = max(embadding_scores, key=embadding_scores.get)
+    print(max_key)
+    return max_key

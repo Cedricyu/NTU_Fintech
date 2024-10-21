@@ -4,9 +4,9 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 from preprocess import preprocess_text
 import logging
 import torch.nn.functional as F
-
+from device import get_device
 # Initialize device
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = get_device()
 
 # Initialize the cross-encoder model for reranking
 cross_encoder_model_name = 'maidalun1020/bce-reranker-base_v1'  # Replace with your model name
